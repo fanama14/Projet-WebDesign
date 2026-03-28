@@ -1,0 +1,28 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: projet_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: iran_news
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_USER: user_projet
+      MYSQL_PASSWORD: password_projet
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  app:
+    build: .
+    container_name: projet_web
+    restart: always
+    ports:
+      - "${APP_PORT:-8080}:80"
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - db
+
+volumes:
+  db_data:
