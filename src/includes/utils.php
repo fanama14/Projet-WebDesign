@@ -96,8 +96,8 @@ function render_nav()
 {
     ?>
         <div class="top">
-            <a href="/">Accueil</a>
-            <a href="/guerre">Exemple article (/guerre)</a>
+            <a href="/guerre-iran-accueil.html">Accueil</a>
+            <a href="/articles/guerre-iran-article-1-1-5.html">Exemple article</a>
             <?php if (is_logged_in()): ?>
                 <a href="/admin">Backoffice</a>
                 <a href="/logout">Deconnexion</a>
