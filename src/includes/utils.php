@@ -15,7 +15,7 @@ function slugify($value)
     return trim($value, '-');
 }
 
-function render_head($title, $description)
+function render_head($title, $description, $includeEditor = false)
 {
 ?>
     <!doctype html>
@@ -27,6 +27,20 @@ function render_head($title, $description)
         <title><?php echo h($title); ?></title>
         <meta name="description" content="<?php echo h($description); ?>">
         <meta name="robots" content="index,follow">
+        <?php if ($includeEditor): ?>
+            <script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js"></script>
+            <script>
+                tinymce.init({
+                    selector: '#contenu',
+                    menubar: 'file edit view insert format tools table help',
+                    plugins: 'lists link image table code autoresize',
+                    toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | alignleft aligncenter alignright | link image table | code',
+                    image_caption: true,
+                    branding: false,
+                    height: 420
+                });
+            </script>
+        <?php endif; ?>
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -111,4 +125,17 @@ function render_nav()
 function render_foot()
 {
     echo "</body></html>";
+}
+
+function render_article_html($html)
+{
+    $clean = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $html);
+    if ($clean === null) {
+        $clean = '';
+    }
+
+    return strip_tags(
+        $clean,
+        '<p><br><strong><b><em><i><u><ul><ol><li><a><h1><h2><h3><h4><h5><h6><blockquote><img><figure><figcaption>'
+    );
 }

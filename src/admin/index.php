@@ -4,8 +4,12 @@ require_once __DIR__ . '/../includes/bootstrap.php';
 
 require_login();
 
-$ok = isset($_GET['ok']) ? $_GET['ok'] : '';
+$ok = isset($_SESSION['flash_ok']) ? $_SESSION['flash_ok'] : (isset($_GET['ok']) ? $_GET['ok'] : '');
+$err = isset($_SESSION['flash_err']) ? $_SESSION['flash_err'] : (isset($_GET['err']) ? $_GET['err'] : '');
+$note = isset($_SESSION['flash_note']) ? $_SESSION['flash_note'] : (isset($_GET['note']) ? $_GET['note'] : '');
 $editArticle = null;
+
+unset($_SESSION['flash_ok'], $_SESSION['flash_err'], $_SESSION['flash_note']);
 
 if (isset($_GET['edit'])) {
     $stmt = $pdo->prepare('SELECT * FROM articles WHERE id = :id LIMIT 1');
@@ -15,7 +19,7 @@ if (isset($_GET['edit'])) {
 
 $articles = $pdo->query('SELECT * FROM articles ORDER BY updated_at DESC')->fetchAll();
 
-render_head('Backoffice Articles - Iran News', 'Gestion des articles: ajout, modification et suppression.');
+render_head('Backoffice Articles - Iran News', 'Gestion des articles: ajout, modification et suppression.', true);
 render_nav();
 ?>
 
@@ -25,9 +29,21 @@ render_nav();
     <p class="ok">Operation reussie.</p>
 <?php endif; ?>
 
+<?php if ($note === 'slug_changed'): ?>
+    <p class="ok">Le slug existait deja. Un slug unique a ete genere automatiquement.</p>
+<?php endif; ?>
+
+<?php if ($err === 'missing'): ?>
+    <p class="error">Le titre, le slug et le contenu sont obligatoires.</p>
+<?php elseif ($err === 'slug_exists'): ?>
+    <p class="error">Ce slug existe deja. Utilisez un slug unique.</p>
+<?php elseif ($err === 'db'): ?>
+    <p class="error">Erreur base de donnees pendant l'enregistrement.</p>
+<?php endif; ?>
+
 <div class="box">
     <h2><?php echo $editArticle ? 'Modifier un article' : 'Ajouter un article'; ?></h2>
-    <form method="post" action="/admin/save.php">
+    <form method="post" action="/admin/save.php" onsubmit="if (window.tinymce) { tinymce.triggerSave(); }">
         <?php if ($editArticle): ?>
             <input type="hidden" name="id" value="<?php echo (int)$editArticle['id']; ?>">
         <?php endif; ?>
@@ -39,7 +55,7 @@ render_nav();
         <input name="slug" required value="<?php echo h(isset($editArticle['slug']) ? $editArticle['slug'] : ''); ?>">
 
         <label>Contenu</label>
-        <textarea name="content" rows="6" required><?php echo h(isset($editArticle['content']) ? $editArticle['content'] : ''); ?></textarea>
+        <textarea id="contenu" name="content" rows="6"><?php echo h(isset($editArticle['content']) ? $editArticle['content'] : ''); ?></textarea>
 
         <label>Image URL</label>
         <input name="image_url" value="<?php echo h(isset($editArticle['image_url']) ? $editArticle['image_url'] : ''); ?>">

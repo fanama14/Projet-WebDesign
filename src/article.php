@@ -9,7 +9,7 @@ $article = $stmt->fetch();
 
 if (!$article) {
     http_response_code(404);
-    render_head('Article introuvable - Iran News', 'La page demandee est introuvable.');
+    render_head('Article introuvable - Iran News', 'La page demandee est introuvable.', false);
     render_nav();
     echo '<h1>Article introuvable</h1>';
     echo '<p>Le contenu demande n existe pas.</p>';
@@ -18,7 +18,7 @@ if (!$article) {
 }
 
 $metaDescription = substr(trim($article['content']), 0, 155);
-render_head($article['title'] . ' - Iran News', $metaDescription);
+render_head($article['title'] . ' - Iran News', $metaDescription, false);
 render_nav();
 ?>
 
@@ -29,6 +29,6 @@ render_nav();
     <img src="<?php echo h($article['image_url']); ?>" alt="<?php echo h(!empty($article['image_alt']) ? $article['image_alt'] : $article['title']); ?>" loading="lazy">
 <?php endif; ?>
 
-<div class="box"><?php echo nl2br(h($article['content'])); ?></div>
+<div class="box"><?php echo render_article_html($article['content']); ?></div>
 
 <?php render_foot(); ?>
