@@ -1,32 +1,23 @@
 <?php
-$page = $_GET['page'] ?? 'accueil';
+
+require_once __DIR__ . '/includes/bootstrap.php';
+
+$articles = $pdo->query('SELECT title, slug, content, image_url, image_alt, updated_at FROM articles WHERE is_published = 1 ORDER BY updated_at DESC')->fetchAll();
+
+render_head('Iran News - Guerre en Iran', 'Site d informations sur la guerre en Iran avec front office et backoffice.');
+render_nav();
 ?>
-<!doctype html>
-<html lang="fr">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Projet Web Design</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 2rem;
-            line-height: 1.5;
-        }
+<h1>Actualites - Guerre en Iran</h1>
 
-        code {
-            background: #f3f3f3;
-            padding: 0.15rem 0.35rem;
-            border-radius: 4px;
-        }
-    </style>
-</head>
+<?php foreach ($articles as $item): ?>
+    <div class="box">
+        <h2><a href="/<?php echo h($item['slug']); ?>"><?php echo h($item['title']); ?></a></h2>
+        <?php if (!empty($item['image_url'])): ?>
+            <img src="<?php echo h($item['image_url']); ?>" alt="<?php echo h(!empty($item['image_alt']) ? $item['image_alt'] : $item['title']); ?>" loading="lazy">
+        <?php endif; ?>
+        <p><?php echo nl2br(h(substr($item['content'], 0, 180))); ?>...</p>
+    </div>
+<?php endforeach; ?>
 
-<body>
-    <h1>Bonjour</h1>
-    <p>Chef <strong><?php echo htmlspecialchars($page, ENT_QUOTES, 'UTF-8'); ?></strong></p>
-    <p>Test rewrite: ouvrez <code>/guerre</code> dans l'URL.</p>
-</body>
-
-</html>
+<?php render_foot(); ?>
