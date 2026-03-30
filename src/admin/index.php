@@ -98,7 +98,7 @@ render_nav();
                     </td>
                     <td><?php echo (int)$article['is_published'] === 1 ? 'Oui' : 'Non'; ?></td>
                     <td class="actions-col">
-                        <a class="btn btn-secondary" href="/admin?edit=<?php echo (int)$article['id']; ?>"><i class="fa-solid fa-pen"></i>Modifier</a>
+                        <a class="btn btn-secondary" href="/admin?edit=<?php echo (int)$article['id']; ?>#create-form"><i class="fa-solid fa-pen"></i>Modifier</a>
                         <a class="btn" href="/admin/delete.php?id=<?php echo (int)$article['id']; ?>" onclick="return confirm('Supprimer cet article ?');"><i class="fa-solid fa-trash"></i>Supprimer</a>
                     </td>
                     <td>
