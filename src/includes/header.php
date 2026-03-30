@@ -16,7 +16,7 @@ if (!isset($activeMenu)) {
     $activeMenu = 'accueil';
 }
 
-$cssFilePath = __DIR__ . '/../css/style.css';
+$cssFilePath = __DIR__ . '/../css/style.min.css';
 $cssVersion = is_file($cssFilePath) ? (string)filemtime($cssFilePath) : '1';
 ?>
 <!doctype html>
@@ -35,7 +35,7 @@ $cssVersion = is_file($cssFilePath) ? (string)filemtime($cssFilePath) : '1';
     <meta property="og:description" content="<?php echo h($pageDescription); ?>">
     <meta property="og:url" content="<?php echo h($canonicalUrl); ?>">
 
-    <link rel="stylesheet" href="/css/style.css?v=<?php echo h($cssVersion); ?>">
+    <link rel="stylesheet" href="/css/style.min.css?v=<?php echo h($cssVersion); ?>">
 </head>
 
 <body>

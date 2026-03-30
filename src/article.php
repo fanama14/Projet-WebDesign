@@ -60,7 +60,7 @@ include __DIR__ . '/includes/header.php';
 
         <figure class="article-figure">
             <picture>
-                <source media="(max-width: 980px)" srcset="<?php echo h($detailThumbSrc); ?>">
+                <source media="(max-width: 800px)" srcset="<?php echo h($detailThumbSrc); ?>">
                 <img
                     src="<?php echo h($detailMainSrc); ?>"
                     alt="<?php echo h(front_article_alt($article, 'actualite guerre iran')); ?>"
