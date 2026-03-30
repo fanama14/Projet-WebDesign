@@ -1,5 +1,32 @@
 <?php
 
+function ensure_default_backoffice_user($pdo)
+{
+    try {
+        $tableCheck = $pdo->query("SHOW TABLES LIKE 'users'")->fetchColumn();
+        if ($tableCheck === false) {
+            return;
+        }
+
+        $stmt = $pdo->prepare('SELECT id FROM users WHERE username = :username LIMIT 1');
+        $stmt->execute(array('username' => 'admin'));
+        $exists = $stmt->fetchColumn();
+
+        if ($exists !== false) {
+            return;
+        }
+
+        $insert = $pdo->prepare('INSERT INTO users (username, password_hash) VALUES (:username, :password_hash)');
+        $insert->execute(array(
+            'username' => 'admin',
+            // Default password: admin123
+            'password_hash' => '$2y$10$2BlhLlBnrCkmLkutol2MS.PRbGqXuQKFZ6uR5npMxlE7CJMSnVIJa',
+        ));
+    } catch (Throwable $e) {
+        // Keep front and backoffice available even if user bootstrap fails.
+    }
+}
+
 function db()
 {
     static $pdo = null;
@@ -26,6 +53,7 @@ function db()
     }
 
     $pdo = new PDO($dsn, $user, $pass, $options);
+    ensure_default_backoffice_user($pdo);
 
     return $pdo;
 }

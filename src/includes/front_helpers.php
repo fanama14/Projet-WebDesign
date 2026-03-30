@@ -154,6 +154,21 @@ function front_article_thumb_src($article, $width, $height, $fallbackAlt = 'actu
     return front_article_image_src($article, $width, $height, $fallbackAlt);
 }
 
+function front_render_article_html($html)
+{
+    $decoded = html_entity_decode((string)$html, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $clean = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $decoded);
+
+    if ($clean === null) {
+        $clean = '';
+    }
+
+    return strip_tags(
+        $clean,
+        '<p><br><strong><b><em><i><u><ul><ol><li><a><h1><h2><h3><h4><h5><h6><blockquote><img><figure><figcaption>'
+    );
+}
+
 function front_theme_articles()
 {
     return array(

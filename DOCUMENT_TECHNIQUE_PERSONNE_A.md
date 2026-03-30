@@ -87,3 +87,89 @@ Procedure recommandee pour reimporter le SQL en UTF-8 (Docker):
 - Captures FO et BO: a inserer
 - Num ETU: a renseigner
 - Rapport Lighthouse mobile/desktop: a executer localement et joindre les scores
+
+
+
+
+
+
+
+
+
+## 8) Lysa
+Modifie le système d’upload d’images dans le backoffice : génération automatique de plusieurs tailles pour améliorer les performances et le SEO.
+OBJECTIFS :
+1. BACKEND PHP
+* Créer un script d’upload d’image sécurisé :
+  * accepter tous types d'image : jpg, png, webp, ...
+  * renommer l’image automatiquement (uniqid ou timestamp)
+  * stocker dans src/assets/images/
+* Générer automatiquement 2 tailles :
+  * 400px (thumb)
+  * 1000px (main)
+* Utiliser GD pour :
+  * redimensionner
+  * conserver le ratio
+  * gérer transparence PNG/WebP/...
+* Générer les fichiers :
+  * nom-unique-x-thumb_400.webp
+  * nom-unique-main_1200.webp
+* convertir automatiquement en WebP
+* Supprimer l’image originale après traitement (optionnel)
+
+2. FRONTEND HTML :
+srcset, loading="lazy", alt dynamique
+
+3. STRUCTURE DU PROJET
+src/
+├── assets/
+│     ├── css/
+│     ├── js/
+│     └── images/
+├── uploads/
+│     └── articles/
+├── admin/
+│     └── upload.php
+├── includes/
+└── index.php
+
+4. DOCKER
+Donner :
+* docker-compose.yml complet avec :
+  * service php (apache)
+  * service mysql
+  * volumes
+* Dockerfile PHP avec :
+  * installation GD (jpeg, png, webp) obligatoire
+  * extensions pdo_mysql et mysqli
+  * activation mod_rewrite
+
+IMPORTANT :
+* utiliser *DIR* pour tous les chemins
+* aucun chemin absolu Windows
+* code compatible Docker uniquement
+* code clair et commenté
+
+5. BONUS PRO (si possible)
+* système de nommage par ID article
+* fonction PHP réutilisable pour resize
+* gestion des erreurs
+* sécurité upload (mime type + extension)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <?php echo front_render_article_html($article['content']); ?>

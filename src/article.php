@@ -20,7 +20,7 @@ if ($article === null) {
     $activeMenu = 'actualites';
 
     include __DIR__ . '/includes/header.php';
-    ?>
+?>
     <main class="layout-main">
         <section class="not-found">
             <h1>Article introuvable</h1>
@@ -29,7 +29,7 @@ if ($article === null) {
             <a class="link-read" href="/guerre-iran-actualites.html">Voir les actualites</a>
         </section>
     </main>
-    <?php
+<?php
     include __DIR__ . '/includes/footer.php';
     exit;
 }
@@ -76,7 +76,7 @@ include __DIR__ . '/includes/header.php';
 
         <section class="article-content" aria-labelledby="content-title" itemprop="articleBody">
             <h2 id="content-title">Contenu complet</h2>
-            <p><?php echo nl2br(h($article['content'])); ?></p>
+            <?php echo front_render_article_html($article['content']); ?>
         </section>
     </article>
 

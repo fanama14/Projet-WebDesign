@@ -17,6 +17,8 @@ function slugify($value)
 
 function render_head($title, $description, $includeEditor = false)
 {
+    $boCssFile = __DIR__ . '/../assets/css/backoffice.css';
+    $boCssVersion = is_file($boCssFile) ? (string)filemtime($boCssFile) : '1';
 ?>
     <!doctype html>
     <html lang="fr">
@@ -27,6 +29,8 @@ function render_head($title, $description, $includeEditor = false)
         <title><?php echo h($title); ?></title>
         <meta name="description" content="<?php echo h($description); ?>">
         <meta name="robots" content="index,follow">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWix+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkR4j8RkGH1Z0W3xVxA7l+Yh6fP0A6p3R5tw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+        <link rel="stylesheet" href="/assets/css/backoffice.css?v=<?php echo h($boCssVersion); ?>">
         <?php if ($includeEditor): ?>
             <script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js"></script>
             <script>
@@ -35,107 +39,57 @@ function render_head($title, $description, $includeEditor = false)
                     menubar: 'file edit view insert format tools table help',
                     plugins: 'lists link image table code autoresize',
                     toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | alignleft aligncenter alignright | link image table | code',
+                    entity_encoding: 'raw',
                     image_caption: true,
                     branding: false,
                     height: 420
                 });
             </script>
         <?php endif; ?>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                margin: 24px;
-                line-height: 1.45;
-            }
-
-            .top a {
-                margin-right: 12px;
-            }
-
-            .box {
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                padding: 14px;
-                margin: 14px 0;
-            }
-
-            .box img {
-                max-width: 100%;
-                height: auto;
-                display: block;
-                margin: 8px 0;
-                border-radius: 6px;
-            }
-
-            input,
-            textarea {
-                width: 100%;
-                padding: 8px;
-                margin-top: 4px;
-                margin-bottom: 10px;
-            }
-
-            button {
-                padding: 8px 12px;
-                cursor: pointer;
-            }
-
-            .error {
-                color: #9a1a1a;
-            }
-
-            .ok {
-                color: #0b6b2c;
-            }
-
-            table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-
-            th,
-            td {
-                border-bottom: 1px solid #e7e7e7;
-                text-align: left;
-                padding: 8px;
-            }
-        </style>
     </head>
 
     <body>
-    <?php
-}
-
-function render_nav()
-{
-    ?>
-        <div class="top">
-            <a href="/guerre-iran-accueil.html">Accueil</a>
-            <a href="/articles/guerre-iran-article-1-1-5.html">Exemple article</a>
-            <?php if (is_logged_in()): ?>
-                <a href="/admin">Backoffice</a>
-                <a href="/logout">Deconnexion</a>
-            <?php else: ?>
-                <a href="/login">Connexion BO</a>
-            <?php endif; ?>
-        </div>
-    <?php
-}
-
-function render_foot()
-{
-    echo "</body></html>";
-}
-
-function render_article_html($html)
-{
-    $clean = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $html);
-    if ($clean === null) {
-        $clean = '';
+        <div class="bo-layout">
+        <?php
     }
 
-    return strip_tags(
-        $clean,
-        '<p><br><strong><b><em><i><u><ul><ol><li><a><h1><h2><h3><h4><h5><h6><blockquote><img><figure><figcaption>'
-    );
-}
+    function render_nav()
+    {
+        ?>
+            <aside class="bo-sidebar">
+                <a class="bo-brand" href="/admin">
+                    Iran Admin
+                    <small>BackOffice editorial</small>
+                </a>
+                <nav class="bo-nav" aria-label="Menu administration">
+                    <?php if (is_logged_in()): ?>
+                        <a href="/admin#articles-list"><i class="fa-solid fa-list"></i>Voir les articles</a>
+                        <a href="/admin#create-form"><i class="fa-solid fa-plus"></i>Ajouter</a>
+                        <a class="bo-muted-link" href="/guerre-iran-accueil.html"><i class="fa-solid fa-house"></i>Retour site</a>
+                        <a class="bo-muted-link" href="/logout"><i class="fa-solid fa-right-from-bracket"></i>Deconnexion</a>
+                    <?php else: ?>
+                        <a class="bo-muted-link" href="/login"><i class="fa-solid fa-user-lock"></i>Connexion BO</a>
+                    <?php endif; ?>
+                </nav>
+            </aside>
+            <main class="bo-main">
+            <?php
+        }
+
+        function render_foot()
+        {
+            echo "</main></div></body></html>";
+        }
+
+        function render_article_html($html)
+        {
+            $clean = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $html);
+            if ($clean === null) {
+                $clean = '';
+            }
+
+            return strip_tags(
+                $clean,
+                '<p><br><strong><b><em><i><u><ul><ol><li><a><h1><h2><h3><h4><h5><h6><blockquote><img><figure><figcaption>'
+            );
+        }

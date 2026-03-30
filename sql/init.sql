@@ -86,4 +86,4 @@ INSERT INTO article_images (article_id, image_kind, image_path, image_alt, sort_
 (5, 'main', '/assets/images/article-5.webp', 'Conséquences économiques et sociales de la guerre 2026', 1),
 (5, 'thumb', '/assets/images/article-5-thumb.webp', 'Conséquences économiques et sociales de la guerre 2026', 1),
 (6, 'main', '/assets/images/article-6.webp', 'Netanyahu, Trump et les derniers développements du conflit', 1),
-(6, 'thumb', '/assets/images/article-6-thumb.jpg', 'Netanyahu, Trump et les derniers développements du conflit', 1);
+(6, 'thumb', '/assets/images/article-6-thumb.webp', 'Netanyahu, Trump et les derniers développements du conflit', 1);
