@@ -26,7 +26,7 @@ RewriteRule ^admin/?$ admin/index.php [QSA,L]
 
 # Regle type lecon (captures) adaptee au format:
 # /articles/guerre-iran-article-12-2-5.html -> id=12&page=2&rubrique=5
-RewriteRule ^articles/guerre-iran-article-([0-9]+)-([0-9]+)-([0-9]+)\.html$ pages/article.php?id=$1&page=$2&rubrique=$3 [QSA,L,NC]
+RewriteRule ^articles/guerre-iran-article-([0-9]+)-([0-9]+)-([0-9]+)\.html$ article.php?id=$1&page=$2&rubrique=$3 [QSA,L,NC]
 
 # Redirection de l'ancien format article sans mot-cle.
 RewriteRule ^articles/article-([0-9]+)-([0-9]+)-([0-9]+)\.html$ /articles/guerre-iran-article-$1-$2-$3.html [R=302,L]

@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../includes/front_helpers.php';
+require_once __DIR__ . '/includes/front_helpers.php';
 
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT, array('options' => array('min_range' => 1)));
 $pageNum = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT, array('options' => array('min_range' => 1)));
@@ -19,7 +19,7 @@ if ($article === null) {
     $canonicalUrl = front_canonical_url('/guerre-iran-actualites.html');
     $activeMenu = 'actualites';
 
-    include __DIR__ . '/../includes/header.php';
+    include __DIR__ . '/includes/header.php';
     ?>
     <main class="layout-main">
         <section class="not-found">
@@ -30,7 +30,7 @@ if ($article === null) {
         </section>
     </main>
     <?php
-    include __DIR__ . '/../includes/footer.php';
+    include __DIR__ . '/includes/footer.php';
     exit;
 }
 
@@ -41,7 +41,7 @@ $canonicalUrl = front_canonical_url($articlePath);
 $activeMenu = 'actualites';
 $recentArticles = front_recent_articles(5, (int)$article['id']);
 
-include __DIR__ . '/../includes/header.php';
+include __DIR__ . '/includes/header.php';
 ?>
 
 <main class="layout-main article-layout">
@@ -61,6 +61,8 @@ include __DIR__ . '/../includes/header.php';
             <img
                 src="<?php echo h(front_article_image_src($article, 1280, 720, 'actualite guerre iran')); ?>"
                 alt="<?php echo h(front_article_alt($article, 'actualite guerre iran')); ?>"
+                width="1280"
+                height="720"
                 itemprop="image"
                 loading="eager">
         </figure>
@@ -81,4 +83,4 @@ include __DIR__ . '/../includes/header.php';
     </aside>
 </main>
 
-<?php include __DIR__ . '/../includes/footer.php'; ?>
+<?php include __DIR__ . '/includes/footer.php'; ?>
