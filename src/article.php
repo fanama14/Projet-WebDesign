@@ -39,7 +39,7 @@ $pageTitle = (string)$article['title'] . ' | Orient Vif';
 $pageDescription = front_excerpt($article['content'], 155);
 $canonicalUrl = front_canonical_url($articlePath);
 $activeMenu = 'actualites';
-$recentArticles = front_recent_articles(5, (int)$article['id']);
+$sidebarOtherArticles = front_recent_articles_excluding(5, array((int)$article['id']));
 $detailMainSrc = front_article_image_src($article, 1280, 720, 'actualite guerre iran');
 $detailThumbSrc = front_article_thumb_src($article, 860, 520, 'actualite guerre iran');
 
@@ -56,8 +56,9 @@ include __DIR__ . '/includes/header.php';
             <h1 itemprop="headline"><?php echo h($article['title']); ?></h1>
             <p class="article-meta">
                 Date publication:
-                <time itemprop="datePublished" datetime="<?php echo h(isset($article['created_at']) ? $article['created_at'] : $article['updated_at']); ?>">
-                    <?php echo h(front_format_date(isset($article['created_at']) ? $article['created_at'] : $article['updated_at'])); ?>
+                <?php $publishedAt = front_article_datetime_value($article); ?>
+                <time itemprop="datePublished" datetime="<?php echo h($publishedAt); ?>">
+                    <?php echo h(front_format_datetime($publishedAt)); ?>
                 </time>
             </p>
         </header>
@@ -86,8 +87,13 @@ include __DIR__ . '/includes/header.php';
     <aside class="sidebar article-sidebar" aria-labelledby="recent-title">
         <h2 id="recent-title">Autres articles</h2>
         <ul>
-            <?php foreach ($recentArticles as $recent): ?>
-                <li><a href="<?php echo h(front_article_url($recent)); ?>"><?php echo h($recent['title']); ?></a></li>
+            <?php foreach ($sidebarOtherArticles as $otherArticle): ?>
+                <li>
+                    <a href="<?php echo h(front_article_url($otherArticle)); ?>">
+                        <?php echo h($otherArticle['title']); ?>
+                    </a>
+                    <small class="recent-time"><?php echo h(front_format_datetime(front_article_datetime_value($otherArticle))); ?></small>
+                </li>
             <?php endforeach; ?>
         </ul>
     </aside>

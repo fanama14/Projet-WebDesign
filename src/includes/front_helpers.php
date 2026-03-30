@@ -406,11 +406,30 @@ function front_find_article($slug, $id)
 
 function front_recent_articles($limit = 5, $excludeId = null)
 {
+    $excludeIds = array();
+    if ($excludeId !== null) {
+        $excludeIds[] = (int)$excludeId;
+    }
+
+    return front_recent_articles_excluding($limit, $excludeIds);
+}
+
+function front_recent_articles_excluding($limit = 5, $excludeIds = array())
+{
     $articles = front_fetch_articles();
     $result = array();
+    $excludeMap = array();
+
+    foreach ($excludeIds as $excludeId) {
+        $id = (int)$excludeId;
+        if ($id > 0) {
+            $excludeMap[$id] = true;
+        }
+    }
 
     foreach ($articles as $article) {
-        if ($excludeId !== null && (int)$article['id'] === (int)$excludeId) {
+        $articleId = isset($article['id']) ? (int)$article['id'] : 0;
+        if ($articleId > 0 && isset($excludeMap[$articleId])) {
             continue;
         }
 
@@ -448,4 +467,45 @@ function front_format_date($value)
 
     $month = (int)$date->format('n');
     return $date->format('d') . ' ' . $months[$month] . ' ' . $date->format('Y');
+}
+
+function front_format_datetime($value)
+{
+    try {
+        $date = new DateTime((string)$value);
+    } catch (Exception $exception) {
+        return (string)$value;
+    }
+
+    $months = array(
+        1 => 'janvier',
+        2 => 'fevrier',
+        3 => 'mars',
+        4 => 'avril',
+        5 => 'mai',
+        6 => 'juin',
+        7 => 'juillet',
+        8 => 'aout',
+        9 => 'septembre',
+        10 => 'octobre',
+        11 => 'novembre',
+        12 => 'decembre',
+    );
+
+    $month = (int)$date->format('n');
+
+    return $date->format('d') . ' ' . $months[$month] . ' ' . $date->format('Y') . ' a ' . $date->format('H:i');
+}
+
+function front_article_datetime_value($article)
+{
+    if (isset($article['updated_at']) && trim((string)$article['updated_at']) !== '') {
+        return (string)$article['updated_at'];
+    }
+
+    if (isset($article['created_at']) && trim((string)$article['created_at']) !== '') {
+        return (string)$article['created_at'];
+    }
+
+    return '';
 }

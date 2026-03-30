@@ -6,23 +6,36 @@ $viewRaw = isset($_GET['page']) ? (string)$_GET['page'] : 'accueil';
 $view = in_array($viewRaw, array('accueil', 'actualites', 'contact'), true) ? $viewRaw : 'accueil';
 
 $featuredList = front_fetch_articles_by_ids(array(1));
-$othersList = front_fetch_articles_by_ids(array(2, 3, 4));
-$recentList = front_fetch_articles_by_ids(array(5, 6));
+$otherArticles = front_fetch_articles_by_ids(array(2, 3, 4));
+$latestArticles = front_fetch_articles_by_ids(array(5, 6));
 
 $featuredArticle = count($featuredList) > 0 ? $featuredList[0] : null;
-$gridArticles = $othersList;
-$recentArticles = $recentList;
+$spotlightArticles = $otherArticles;
+$sidebarLatestArticles = $latestArticles;
 
-if ($featuredArticle === null || count($gridArticles) === 0 || count($recentArticles) === 0) {
+if ($featuredArticle === null || count($spotlightArticles) === 0 || count($sidebarLatestArticles) === 0) {
     $fallback = front_fetch_articles();
+    $excludedIds = array();
+
     if ($featuredArticle === null && count($fallback) > 0) {
         $featuredArticle = $fallback[0];
     }
-    if (count($gridArticles) === 0) {
-        $gridArticles = array_slice($fallback, 1, 3);
+    if ($featuredArticle !== null && isset($featuredArticle['id'])) {
+        $excludedIds[] = (int)$featuredArticle['id'];
     }
-    if (count($recentArticles) === 0) {
-        $recentArticles = array_slice($fallback, 4, 2);
+
+    if (count($spotlightArticles) === 0) {
+        $spotlightArticles = front_recent_articles_excluding(3, $excludedIds);
+    }
+
+    foreach ($spotlightArticles as $spotlightArticle) {
+        if (isset($spotlightArticle['id'])) {
+            $excludedIds[] = (int)$spotlightArticle['id'];
+        }
+    }
+
+    if (count($sidebarLatestArticles) === 0) {
+        $sidebarLatestArticles = front_recent_articles_excluding(2, $excludedIds);
     }
 }
 
@@ -64,6 +77,7 @@ include __DIR__ . '/includes/header.php';
                 <div class="hero-content">
                     <p class="kicker">A la une</p>
                     <h1 id="hero-title"><?php echo h($featuredArticle['title']); ?></h1>
+                    <p class="article-time"><?php echo h(front_format_datetime(front_article_datetime_value($featuredArticle))); ?></p>
                     <p class="hero-summary"><?php echo h(front_excerpt($featuredArticle['content'], 230)); ?></p>
                     <a class="link-read" href="<?php echo h(front_article_url($featuredArticle)); ?>">Lire l'article principal</a>
                 </div>
@@ -92,7 +106,7 @@ include __DIR__ . '/includes/header.php';
         <aside class="sidebar hero-sidebar" aria-labelledby="sidebar-title">
             <h2 id="sidebar-title">Articles recents</h2>
             <ul>
-                <?php foreach ($recentArticles as $recent): ?>
+                <?php foreach ($sidebarLatestArticles as $recent): ?>
                     <li>
                         <a class="recent-link" href="<?php echo h(front_article_url($recent)); ?>">
                             <img
@@ -103,7 +117,10 @@ include __DIR__ . '/includes/header.php';
                                 loading="lazy"
                                 fetchpriority="low"
                                 decoding="async">
-                            <span><?php echo h($recent['title']); ?></span>
+                            <span class="recent-text">
+                                <span class="recent-title"><?php echo h($recent['title']); ?></span>
+                                <small class="recent-time"><?php echo h(front_format_datetime(front_article_datetime_value($recent))); ?></small>
+                            </span>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -114,11 +131,11 @@ include __DIR__ . '/includes/header.php';
     <section id="actualites" class="articles-section" aria-labelledby="articles-title">
             <h2 id="articles-title" class="section-kicker">A ne pas manquer</h2>
 
-        <?php if (count($gridArticles) === 0): ?>
+        <?php if (count($spotlightArticles) === 0): ?>
             <p class="empty-state">Aucun autre article disponible pour le moment.</p>
         <?php else: ?>
             <div class="cards-grid">
-                <?php foreach ($gridArticles as $article): ?>
+                <?php foreach ($spotlightArticles as $article): ?>
                     <article class="news-card">
                         <a class="card-image-link" href="<?php echo h(front_article_url($article)); ?>">
                             <img
@@ -132,6 +149,7 @@ include __DIR__ . '/includes/header.php';
                         </a>
                         <div class="card-body">
                             <h3><a href="<?php echo h(front_article_url($article)); ?>"><?php echo h($article['title']); ?></a></h3>
+                            <p class="article-time"><?php echo h(front_format_datetime(front_article_datetime_value($article))); ?></p>
                             <p><?php echo h(front_excerpt($article['content'], 140)); ?></p>
                             <a class="link-read" href="<?php echo h(front_article_url($article)); ?>">Lire plus</a>
                         </div>

@@ -74,6 +74,30 @@ INSERT INTO articles (title, slug, content, is_published) VALUES
 ('Netanyahu, Trump et les derniers développements du conflit', 'netanyahu-trump-developpements-conflit-2026',
  'Le conflit s''étend maintenant au 30e jour, avec des frappes continues sur les infrastructures iraniennes et des réponses iraniennes par missiles. Le Premier ministre israélien Benjamin Netanyahu travaille en coordination avec le président Donald Trump pour maintenir la pression tout en gérant les réactions internationales. Les pourparlers diplomatiques restent tendus avec peu de signes de désescalade.', 1);
 
+UPDATE articles
+SET created_at = '2026-03-24 08:10:00', updated_at = '2026-03-24 09:25:00'
+WHERE id = 1;
+
+UPDATE articles
+SET created_at = '2026-03-25 10:15:00', updated_at = '2026-03-25 12:05:00'
+WHERE id = 2;
+
+UPDATE articles
+SET created_at = '2026-03-26 07:50:00', updated_at = '2026-03-26 08:40:00'
+WHERE id = 3;
+
+UPDATE articles
+SET created_at = '2026-03-27 13:20:00', updated_at = '2026-03-27 15:10:00'
+WHERE id = 4;
+
+UPDATE articles
+SET created_at = '2026-03-28 09:35:00', updated_at = '2026-03-28 11:00:00'
+WHERE id = 5;
+
+UPDATE articles
+SET created_at = '2026-03-29 16:05:00', updated_at = '2026-03-29 18:20:00'
+WHERE id = 6;
+
 INSERT INTO article_images (article_id, image_kind, image_path, image_alt, sort_order) VALUES
 (1, 'main', '/assets/images/article-1.webp', 'Houthis et missiles vers Israël', 1),
 (1, 'thumb', '/assets/images/article-1-thumb.webp', 'Houthis et missiles vers Israël', 1),

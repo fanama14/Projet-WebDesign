@@ -271,6 +271,16 @@ h3 {
     font-weight: 300;
 }
 
+.article-time {
+    display: block;
+    font-family: var(--font-ui);
+    font-size: 0.76rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #8f949b;
+    margin: 0.08rem 0 0.22rem;
+}
+
 .hero-image-wrap {
     position: relative;
     overflow: hidden;
@@ -519,6 +529,29 @@ h3 {
     font-size: 0.98rem;
     line-height: 1.42;
     color: var(--text);
+}
+
+.recent-text {
+    display: block;
+}
+
+.recent-title {
+    display: block;
+    color: var(--text);
+}
+
+.recent-time {
+    display: block;
+    margin-top: 0.28rem;
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #8f949b;
+}
+
+.article-sidebar li > a {
+    display: block;
 }
 
 /* ─── Page Article Détail ─────────────────────────────────── */
