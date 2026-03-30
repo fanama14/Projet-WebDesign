@@ -42,6 +42,17 @@ if ($view === 'contact') {
 }
 
 $canonicalUrl = front_canonical_url($canonicalPath);
+$heroMainSrc = null;
+$heroThumbSrc = null;
+
+if ($featuredArticle !== null) {
+    $heroMainSrc = front_article_image_src($featuredArticle, 1200, 760, 'conflit en iran article principal');
+    $heroThumbSrc = front_article_thumb_src($featuredArticle, 860, 520, 'conflit en iran article principal');
+
+    $preloadImageHref = $heroMainSrc;
+    $preloadImageSrcset = $heroThumbSrc . ' 860w, ' . $heroMainSrc . ' 1200w';
+    $preloadImageSizes = '(max-width: 800px) 100vw, 980px';
+}
 
 include __DIR__ . '/includes/header.php';
 ?>
@@ -50,10 +61,6 @@ include __DIR__ . '/includes/header.php';
     <section class="hero-news" aria-labelledby="hero-title">
         <div class="hero-main">
             <?php if ($featuredArticle): ?>
-                <?php
-                $heroMainSrc = front_article_image_src($featuredArticle, 1200, 760, 'conflit en iran article principal');
-                $heroThumbSrc = front_article_thumb_src($featuredArticle, 860, 520, 'conflit en iran article principal');
-                ?>
                 <div class="hero-content">
                     <p class="kicker">A la une</p>
                     <h1 id="hero-title"><?php echo h($featuredArticle['title']); ?></h1>

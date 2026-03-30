@@ -43,6 +43,10 @@ $recentArticles = front_recent_articles(5, (int)$article['id']);
 $detailMainSrc = front_article_image_src($article, 1280, 720, 'actualite guerre iran');
 $detailThumbSrc = front_article_thumb_src($article, 860, 520, 'actualite guerre iran');
 
+$preloadImageHref = $detailMainSrc;
+$preloadImageSrcset = $detailThumbSrc . ' 860w, ' . $detailMainSrc . ' 1280w';
+$preloadImageSizes = '(max-width: 800px) 100vw, (max-width: 1260px) 68vw, 920px';
+
 include __DIR__ . '/includes/header.php';
 ?>
 
