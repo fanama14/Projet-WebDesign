@@ -59,6 +59,15 @@ function front_article_alt($article, $fallback = 'actualite guerre iran')
     return $fallback;
 }
 
+function front_article_thumb_alt($article, $fallback = 'actualite guerre iran')
+{
+    if (!empty($article['image_thumb_alt'])) {
+        return (string)$article['image_thumb_alt'];
+    }
+
+    return front_article_alt($article, $fallback);
+}
+
 function front_svg_placeholder($label, $width, $height)
 {
     $safeLabel = htmlspecialchars((string)$label, ENT_QUOTES, 'UTF-8');
@@ -97,6 +106,28 @@ function front_local_image_url($rawPath)
     return null;
 }
 
+function front_build_thumb_path($rawPath)
+{
+    $path = trim((string)$rawPath);
+    if ($path === '' || preg_match('/^https?:\/\//i', $path)) {
+        return null;
+    }
+
+    $dotPos = strrpos($path, '.');
+    if ($dotPos === false) {
+        return null;
+    }
+
+    $prefix = substr($path, 0, $dotPos);
+    $suffix = substr($path, $dotPos);
+
+    if (substr($prefix, -6) === '-thumb') {
+        return $path;
+    }
+
+    return $prefix . '-thumb' . $suffix;
+}
+
 function front_article_image_src($article, $width, $height, $fallbackAlt = 'actualite guerre iran')
 {
     $local = front_local_image_url(isset($article['image_url']) ? $article['image_url'] : '');
@@ -107,6 +138,22 @@ function front_article_image_src($article, $width, $height, $fallbackAlt = 'actu
     return front_svg_placeholder(front_article_alt($article, $fallbackAlt), $width, $height);
 }
 
+function front_article_thumb_src($article, $width, $height, $fallbackAlt = 'actualite guerre iran')
+{
+    $thumbLocalFromDb = front_local_image_url(isset($article['image_thumb_url']) ? $article['image_thumb_url'] : '');
+    if ($thumbLocalFromDb !== null) {
+        return $thumbLocalFromDb;
+    }
+
+    $thumbPath = front_build_thumb_path(isset($article['image_url']) ? $article['image_url'] : '');
+    $thumbLocal = front_local_image_url($thumbPath);
+    if ($thumbLocal !== null) {
+        return $thumbLocal;
+    }
+
+    return front_article_image_src($article, $width, $height, $fallbackAlt);
+}
+
 function front_theme_articles()
 {
     return array(
@@ -115,7 +162,7 @@ function front_theme_articles()
             'title' => 'Iran: evolution du conflit et tensions regionales',
             'slug' => 'iran-evolution-conflit-regional',
             'content' => 'Les tensions autour du conflit en Iran se poursuivent avec des repercussions regionales sur la securite, les flux commerciaux et la diplomatie. Cette analyse revient sur les faits marquants de la semaine et les scenarios possibles.',
-            'image_url' => '/assets/images/article1.jpg',
+            'image_url' => '/assets/images/article-1.webp',
             'image_alt' => 'conflit en iran, panorama geopolitique',
             'created_at' => '2026-03-25 09:30:00',
             'updated_at' => '2026-03-28 18:10:00',
@@ -125,7 +172,7 @@ function front_theme_articles()
             'title' => 'Civils et infrastructures: les enjeux humanitaires en Iran',
             'slug' => 'enjeux-humanitaires-iran',
             'content' => 'Les consequences humanitaires restent au centre des preoccupations avec une pression croissante sur les services de sante et les infrastructures critiques. Le suivi des besoins locaux devient une priorite des organisations internationales.',
-            'image_url' => '/assets/images/article2.jpg',
+            'image_url' => '/assets/images/article-2.webp',
             'image_alt' => 'actualite guerre iran et impact humanitaire',
             'created_at' => '2026-03-23 10:00:00',
             'updated_at' => '2026-03-27 11:20:00',
@@ -135,7 +182,7 @@ function front_theme_articles()
             'title' => 'Iran: diplomatie, cessez-le-feu et rapports de force',
             'slug' => 'iran-diplomatie-cessez-le-feu',
             'content' => 'Les initiatives diplomatiques se multiplient autour de propositions de desescalade. Les acteurs regionaux et internationaux cherchent un compromis durable, alors que les rapports de force evoluent rapidement sur le terrain.',
-            'image_url' => '/assets/images/article3.jpg',
+            'image_url' => '/assets/images/article-3.webp',
             'image_alt' => 'analyse diplomatique du conflit en iran',
             'created_at' => '2026-03-21 07:40:00',
             'updated_at' => '2026-03-26 09:05:00',
@@ -148,17 +195,70 @@ function front_fetch_articles()
     $pdo = db();
 
     try {
-        $sql = 'SELECT id, title, slug, content, image_url, image_alt, created_at, updated_at FROM articles WHERE is_published = 1 ORDER BY updated_at DESC';
+        $sql = "SELECT
+                    a.id,
+                    a.title,
+                    a.slug,
+                    a.content,
+                    ai_main.image_path AS image_url,
+                    COALESCE(ai_thumb.image_path, '') AS image_thumb_url,
+                    COALESCE(NULLIF(ai_main.image_alt, ''), a.title) AS image_alt,
+                    COALESCE(NULLIF(ai_thumb.image_alt, ''), NULLIF(ai_main.image_alt, ''), a.title) AS image_thumb_alt,
+                    a.created_at,
+                    a.updated_at
+                FROM articles a
+                LEFT JOIN article_images ai_main
+                    ON ai_main.article_id = a.id AND ai_main.image_kind = 'main'
+                LEFT JOIN article_images ai_thumb
+                    ON ai_thumb.article_id = a.id AND ai_thumb.image_kind = 'thumb'
+                WHERE a.is_published = 1
+                ORDER BY a.updated_at DESC";
         $rows = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         if (!empty($rows)) {
             return $rows;
         }
     } catch (PDOException $exception) {
-        // Fallback to a schema without is_published.
+        // Fallbacks for older schemas.
     }
 
     try {
-        $sql = 'SELECT id, title, slug, content, image_url, image_alt, created_at, updated_at FROM articles ORDER BY updated_at DESC';
+        $sql = "SELECT
+                    a.id,
+                    a.title,
+                    a.slug,
+                    a.content,
+                    ai_main.image_path AS image_url,
+                    COALESCE(ai_thumb.image_path, '') AS image_thumb_url,
+                    COALESCE(NULLIF(ai_main.image_alt, ''), a.title) AS image_alt,
+                    COALESCE(NULLIF(ai_thumb.image_alt, ''), NULLIF(ai_main.image_alt, ''), a.title) AS image_thumb_alt,
+                    a.created_at,
+                    a.updated_at
+                FROM articles a
+                LEFT JOIN article_images ai_main
+                    ON ai_main.article_id = a.id AND ai_main.image_kind = 'main'
+                LEFT JOIN article_images ai_thumb
+                    ON ai_thumb.article_id = a.id AND ai_thumb.image_kind = 'thumb'
+                ORDER BY a.updated_at DESC";
+        $rows = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        if (!empty($rows)) {
+            return $rows;
+        }
+    } catch (PDOException $exception) {
+        // Fallbacks for schemas without article_images.
+    }
+
+    try {
+        $sql = 'SELECT id, title, slug, content, NULL AS image_url, NULL AS image_thumb_url, title AS image_alt, title AS image_thumb_alt, created_at, updated_at FROM articles WHERE is_published = 1 ORDER BY updated_at DESC';
+        $rows = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        if (!empty($rows)) {
+            return $rows;
+        }
+    } catch (PDOException $exception) {
+        // Fallback for schema without article_images and without image columns.
+    }
+
+    try {
+        $sql = 'SELECT id, title, slug, content, NULL AS image_url, NULL AS image_thumb_url, title AS image_alt, title AS image_thumb_alt, created_at, updated_at FROM articles ORDER BY updated_at DESC';
         $rows = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         if (!empty($rows)) {
             return $rows;
@@ -168,6 +268,117 @@ function front_fetch_articles()
     }
 
     return front_theme_articles();
+}
+
+function front_fetch_articles_by_ids($ids)
+{
+    $cleanIds = array();
+    foreach ($ids as $id) {
+        $num = (int)$id;
+        if ($num > 0) {
+            $cleanIds[] = $num;
+        }
+    }
+
+    if (count($cleanIds) === 0) {
+        return array();
+    }
+
+    $pdo = db();
+    $placeholders = implode(',', array_fill(0, count($cleanIds), '?'));
+    $rows = array();
+
+    try {
+        $sql = "SELECT
+                    a.id,
+                    a.title,
+                    a.slug,
+                    a.content,
+                    ai_main.image_path AS image_url,
+                    COALESCE(ai_thumb.image_path, '') AS image_thumb_url,
+                    COALESCE(NULLIF(ai_main.image_alt, ''), a.title) AS image_alt,
+                    COALESCE(NULLIF(ai_thumb.image_alt, ''), NULLIF(ai_main.image_alt, ''), a.title) AS image_thumb_alt,
+                    a.created_at,
+                    a.updated_at
+                FROM articles a
+                LEFT JOIN article_images ai_main
+                    ON ai_main.article_id = a.id AND ai_main.image_kind = 'main'
+                LEFT JOIN article_images ai_thumb
+                    ON ai_thumb.article_id = a.id AND ai_thumb.image_kind = 'thumb'
+                WHERE a.is_published = 1 AND a.id IN (" . $placeholders . ")";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($cleanIds);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $exception) {
+        try {
+            $sql = "SELECT
+                        a.id,
+                        a.title,
+                        a.slug,
+                        a.content,
+                        ai_main.image_path AS image_url,
+                        COALESCE(ai_thumb.image_path, '') AS image_thumb_url,
+                        COALESCE(NULLIF(ai_main.image_alt, ''), a.title) AS image_alt,
+                        COALESCE(NULLIF(ai_thumb.image_alt, ''), NULLIF(ai_main.image_alt, ''), a.title) AS image_thumb_alt,
+                        a.created_at,
+                        a.updated_at
+                    FROM articles a
+                    LEFT JOIN article_images ai_main
+                        ON ai_main.article_id = a.id AND ai_main.image_kind = 'main'
+                    LEFT JOIN article_images ai_thumb
+                        ON ai_thumb.article_id = a.id AND ai_thumb.image_kind = 'thumb'
+                    WHERE a.id IN (" . $placeholders . ")";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($cleanIds);
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $exception) {
+            $sql = 'SELECT id, title, slug, content, NULL AS image_url, NULL AS image_thumb_url, title AS image_alt, title AS image_thumb_alt, created_at, updated_at FROM articles WHERE is_published = 1 AND id IN (' . $placeholders . ')';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($cleanIds);
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+    }
+
+    if (empty($rows)) {
+        try {
+            $sql = 'SELECT id, title, slug, content, NULL AS image_url, NULL AS image_thumb_url, title AS image_alt, title AS image_thumb_alt, created_at, updated_at FROM articles WHERE id IN (' . $placeholders . ')';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($cleanIds);
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $exception) {
+            $rows = array();
+        }
+    }
+
+    if (empty($rows)) {
+        $fallback = front_theme_articles();
+        $fallbackById = array();
+        foreach ($fallback as $item) {
+            $fallbackById[(int)$item['id']] = $item;
+        }
+
+        $rows = array();
+        foreach ($cleanIds as $id) {
+            $fallbackId = 1000 + $id;
+            if (isset($fallbackById[$fallbackId])) {
+                $rows[] = $fallbackById[$fallbackId];
+            }
+        }
+    }
+
+    $indexed = array();
+    foreach ($rows as $row) {
+        $indexed[(int)$row['id']] = $row;
+    }
+
+    $ordered = array();
+    foreach ($cleanIds as $id) {
+        if (isset($indexed[$id])) {
+            $ordered[] = $indexed[$id];
+        }
+    }
+
+    return $ordered;
 }
 
 function front_find_article($slug, $id)

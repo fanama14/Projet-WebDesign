@@ -234,6 +234,27 @@ h3 {
     text-decoration: underline;
 }
 
+.recent-link {
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    gap: 0.65rem;
+    align-items: center;
+}
+
+.recent-link img {
+    width: 88px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 0.3rem;
+    border: 1px solid var(--line);
+    background: #f4f4f4;
+}
+
+.recent-link span {
+    font-size: 0.95rem;
+    line-height: 1.35;
+}
+
 .article-header {
     border-bottom: 1px solid var(--line);
     margin-bottom: 1rem;

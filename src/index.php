@@ -5,10 +5,26 @@ require_once __DIR__ . '/includes/front_helpers.php';
 $viewRaw = isset($_GET['page']) ? (string)$_GET['page'] : 'accueil';
 $view = in_array($viewRaw, array('accueil', 'actualites', 'contact'), true) ? $viewRaw : 'accueil';
 
-$articles = front_fetch_articles();
-$featuredArticle = count($articles) > 0 ? $articles[0] : null;
-$gridArticles = count($articles) > 1 ? array_slice($articles, 1) : array();
-$recentArticles = front_recent_articles(5);
+$featuredList = front_fetch_articles_by_ids(array(1));
+$othersList = front_fetch_articles_by_ids(array(2, 3, 4));
+$recentList = front_fetch_articles_by_ids(array(5, 6));
+
+$featuredArticle = count($featuredList) > 0 ? $featuredList[0] : null;
+$gridArticles = $othersList;
+$recentArticles = $recentList;
+
+if ($featuredArticle === null || count($gridArticles) === 0 || count($recentArticles) === 0) {
+    $fallback = front_fetch_articles();
+    if ($featuredArticle === null && count($fallback) > 0) {
+        $featuredArticle = $fallback[0];
+    }
+    if (count($gridArticles) === 0) {
+        $gridArticles = array_slice($fallback, 1, 3);
+    }
+    if (count($recentArticles) === 0) {
+        $recentArticles = array_slice($fallback, 4, 2);
+    }
+}
 
 $activeMenu = $view === 'accueil' ? 'accueil' : $view;
 $pageTitle = 'Actualites guerre Iran - FrontOffice journal moderne';
@@ -33,6 +49,10 @@ include __DIR__ . '/includes/header.php';
 <main class="layout-main">
     <section class="hero-news" aria-labelledby="hero-title">
         <?php if ($featuredArticle): ?>
+            <?php
+            $heroMainSrc = front_article_image_src($featuredArticle, 1200, 760, 'conflit en iran article principal');
+            $heroThumbSrc = front_article_thumb_src($featuredArticle, 860, 520, 'conflit en iran article principal');
+            ?>
             <div class="hero-content">
                 <p class="kicker">Article principal</p>
                 <h1 id="hero-title"><?php echo h($featuredArticle['title']); ?></h1>
@@ -40,10 +60,17 @@ include __DIR__ . '/includes/header.php';
                 <a class="link-read" href="<?php echo h(front_article_url($featuredArticle)); ?>">Lire l'article principal</a>
             </div>
             <div class="hero-image-wrap">
-                <img
-                    src="<?php echo h(front_article_image_src($featuredArticle, 1200, 760, 'conflit en iran article principal')); ?>"
-                    alt="<?php echo h(front_article_alt($featuredArticle, 'conflit en iran article principal')); ?>"
-                    loading="eager">
+                <picture>
+                    <source media="(max-width: 980px)" srcset="<?php echo h($heroThumbSrc); ?>">
+                    <img
+                        src="<?php echo h($heroMainSrc); ?>"
+                        alt="<?php echo h(front_article_alt($featuredArticle, 'conflit en iran article principal')); ?>"
+                        width="1200"
+                        height="760"
+                        loading="eager"
+                        fetchpriority="high"
+                        decoding="async">
+                </picture>
             </div>
         <?php else: ?>
             <div class="hero-content">
@@ -66,9 +93,13 @@ include __DIR__ . '/includes/header.php';
                         <article class="news-card">
                             <a class="card-image-link" href="<?php echo h(front_article_url($article)); ?>">
                                 <img
-                                    src="<?php echo h(front_article_image_src($article, 860, 520, 'actualite guerre iran')); ?>"
-                                    alt="<?php echo h(front_article_alt($article, 'actualite guerre iran')); ?>"
-                                    loading="lazy">
+                                    src="<?php echo h(front_article_thumb_src($article, 860, 520, 'actualite guerre iran')); ?>"
+                                    alt="<?php echo h(front_article_thumb_alt($article, 'actualite guerre iran')); ?>"
+                                    width="860"
+                                    height="520"
+                                    loading="lazy"
+                                    fetchpriority="low"
+                                    decoding="async">
                             </a>
                             <div class="card-body">
                                 <h3><a href="<?php echo h(front_article_url($article)); ?>"><?php echo h($article['title']); ?></a></h3>
@@ -86,7 +117,17 @@ include __DIR__ . '/includes/header.php';
             <ul>
                 <?php foreach ($recentArticles as $recent): ?>
                     <li>
-                        <a href="<?php echo h(front_article_url($recent)); ?>"><?php echo h($recent['title']); ?></a>
+                        <a class="recent-link" href="<?php echo h(front_article_url($recent)); ?>">
+                            <img
+                                src="<?php echo h(front_article_thumb_src($recent, 240, 140, 'actualite recente guerre iran')); ?>"
+                                alt="<?php echo h(front_article_thumb_alt($recent, 'actualite recente guerre iran')); ?>"
+                                width="240"
+                                height="140"
+                                loading="lazy"
+                                fetchpriority="low"
+                                decoding="async">
+                            <span><?php echo h($recent['title']); ?></span>
+                        </a>
                     </li>
                 <?php endforeach; ?>
             </ul>

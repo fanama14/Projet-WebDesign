@@ -40,6 +40,8 @@ $pageDescription = front_excerpt($article['content'], 155);
 $canonicalUrl = front_canonical_url($articlePath);
 $activeMenu = 'actualites';
 $recentArticles = front_recent_articles(5, (int)$article['id']);
+$detailMainSrc = front_article_image_src($article, 1280, 720, 'actualite guerre iran');
+$detailThumbSrc = front_article_thumb_src($article, 860, 520, 'actualite guerre iran');
 
 include __DIR__ . '/includes/header.php';
 ?>
@@ -58,13 +60,18 @@ include __DIR__ . '/includes/header.php';
         </header>
 
         <figure class="article-figure">
-            <img
-                src="<?php echo h(front_article_image_src($article, 1280, 720, 'actualite guerre iran')); ?>"
-                alt="<?php echo h(front_article_alt($article, 'actualite guerre iran')); ?>"
-                width="1280"
-                height="720"
-                itemprop="image"
-                loading="eager">
+            <picture>
+                <source media="(max-width: 980px)" srcset="<?php echo h($detailThumbSrc); ?>">
+                <img
+                    src="<?php echo h($detailMainSrc); ?>"
+                    alt="<?php echo h(front_article_alt($article, 'actualite guerre iran')); ?>"
+                    width="1280"
+                    height="720"
+                    itemprop="image"
+                    loading="eager"
+                    fetchpriority="high"
+                    decoding="async">
+            </picture>
         </figure>
 
         <section class="article-content" aria-labelledby="content-title" itemprop="articleBody">
