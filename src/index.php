@@ -62,7 +62,7 @@ include __DIR__ . '/includes/header.php';
                 </div>
                 <div class="hero-image-wrap">
                     <picture>
-                        <source media="(max-width: 980px)" srcset="<?php echo h($heroThumbSrc); ?>">
+                        <source media="(max-width: 800px)" srcset="<?php echo h($heroThumbSrc); ?>">
                         <img
                             src="<?php echo h($heroMainSrc); ?>"
                             alt="<?php echo h(front_article_alt($featuredArticle, 'conflit en iran article principal')); ?>"
