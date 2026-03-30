@@ -12,7 +12,17 @@ $editArticle = null;
 unset($_SESSION['flash_ok'], $_SESSION['flash_err'], $_SESSION['flash_note']);
 
 if (isset($_GET['edit'])) {
-    $stmt = $pdo->prepare('SELECT * FROM articles WHERE id = :id LIMIT 1');
+    $stmt = $pdo->prepare(
+        "SELECT
+            a.*,
+            COALESCE(ai_main.image_path, '') AS image_url,
+            COALESCE(ai_main.image_alt, '') AS image_alt
+         FROM articles a
+         LEFT JOIN article_images ai_main
+            ON ai_main.article_id = a.id AND ai_main.image_kind = 'main'
+         WHERE a.id = :id
+         LIMIT 1"
+    );
     $stmt->execute(array('id' => (int)$_GET['edit']));
     $editArticle = $stmt->fetch();
 }
@@ -89,7 +99,11 @@ render_nav();
             <tr>
                 <td><?php echo (int)$article['id']; ?></td>
                 <td><?php echo h($article['title']); ?></td>
-                <td><a href="/<?php echo h($article['slug']); ?>"><?php echo h($article['slug']); ?></a></td>
+                <td>
+                    <a href="/articles/guerre-iran-article-<?php echo (int)$article['id']; ?>-1-5.html">
+                        <?php echo h($article['slug']); ?>
+                    </a>
+                </td>
                 <td><?php echo (int)$article['is_published'] === 1 ? 'Oui' : 'Non'; ?></td>
                 <td>
                     <a href="/admin?edit=<?php echo (int)$article['id']; ?>">Modifier</a>

@@ -1,23 +1,138 @@
 <?php
 
-require_once __DIR__ . '/includes/bootstrap.php';
+require_once __DIR__ . '/includes/front_helpers.php';
 
-$articles = $pdo->query('SELECT title, slug, content, image_url, image_alt, updated_at FROM articles WHERE is_published = 1 ORDER BY updated_at DESC')->fetchAll();
+$viewRaw = isset($_GET['page']) ? (string)$_GET['page'] : 'accueil';
+$view = in_array($viewRaw, array('accueil', 'actualites', 'contact'), true) ? $viewRaw : 'accueil';
 
-render_head('Iran News - Guerre en Iran', 'Site d informations sur la guerre en Iran avec front office et backoffice.', false);
-render_nav();
+$featuredList = front_fetch_articles_by_ids(array(1));
+$othersList = front_fetch_articles_by_ids(array(2, 3, 4));
+$recentList = front_fetch_articles_by_ids(array(5, 6));
+
+$featuredArticle = count($featuredList) > 0 ? $featuredList[0] : null;
+$gridArticles = $othersList;
+$recentArticles = $recentList;
+
+if ($featuredArticle === null || count($gridArticles) === 0 || count($recentArticles) === 0) {
+    $fallback = front_fetch_articles();
+    if ($featuredArticle === null && count($fallback) > 0) {
+        $featuredArticle = $fallback[0];
+    }
+    if (count($gridArticles) === 0) {
+        $gridArticles = array_slice($fallback, 1, 3);
+    }
+    if (count($recentArticles) === 0) {
+        $recentArticles = array_slice($fallback, 4, 2);
+    }
+}
+
+$activeMenu = $view === 'accueil' ? 'accueil' : $view;
+$pageTitle = 'Actualites guerre Iran - FrontOffice journal moderne';
+$pageDescription = 'Suivez les actualites sur la guerre en Iran: analyses, points de situation et suivi geopolitique.';
+$canonicalPath = '/guerre-iran-accueil.html';
+
+if ($view === 'actualites') {
+    $pageTitle = 'Actualites conflit Iran - Dossier complet';
+    $canonicalPath = '/guerre-iran-actualites.html';
+}
+
+if ($view === 'contact') {
+    $pageTitle = 'Contact redaction - Actualites guerre Iran';
+    $canonicalPath = '/guerre-iran-contact.html';
+}
+
+$canonicalUrl = front_canonical_url($canonicalPath);
+
+include __DIR__ . '/includes/header.php';
 ?>
 
-<h1>Actualites - Guerre en Iran</h1>
-
-<?php foreach ($articles as $item): ?>
-    <div class="box">
-        <h2><a href="/<?php echo h($item['slug']); ?>"><?php echo h($item['title']); ?></a></h2>
-        <?php if (!empty($item['image_url'])): ?>
-            <img src="<?php echo h($item['image_url']); ?>" alt="<?php echo h(!empty($item['image_alt']) ? $item['image_alt'] : $item['title']); ?>" loading="lazy">
+<main class="layout-main">
+    <section class="hero-news" aria-labelledby="hero-title">
+        <?php if ($featuredArticle): ?>
+            <?php
+            $heroMainSrc = front_article_image_src($featuredArticle, 1200, 760, 'conflit en iran article principal');
+            $heroThumbSrc = front_article_thumb_src($featuredArticle, 860, 520, 'conflit en iran article principal');
+            ?>
+            <div class="hero-content">
+                <p class="kicker">Article principal</p>
+                <h1 id="hero-title"><?php echo h($featuredArticle['title']); ?></h1>
+                <p class="hero-summary"><?php echo h(front_excerpt($featuredArticle['content'], 230)); ?></p>
+                <a class="link-read" href="<?php echo h(front_article_url($featuredArticle)); ?>">Lire l'article principal</a>
+            </div>
+            <div class="hero-image-wrap">
+                <picture>
+                    <source media="(max-width: 980px)" srcset="<?php echo h($heroThumbSrc); ?>">
+                    <img
+                        src="<?php echo h($heroMainSrc); ?>"
+                        alt="<?php echo h(front_article_alt($featuredArticle, 'conflit en iran article principal')); ?>"
+                        width="1200"
+                        height="760"
+                        loading="eager"
+                        fetchpriority="high"
+                        decoding="async">
+                </picture>
+            </div>
+        <?php else: ?>
+            <div class="hero-content">
+                <p class="kicker">FrontOffice</p>
+                <h1 id="hero-title">Actualites sur la guerre en Iran</h1>
+                <p class="hero-summary">Les articles seront affiches ici des qu'un contenu sera publie depuis le backoffice.</p>
+            </div>
         <?php endif; ?>
-        <p><?php echo h(substr(trim(strip_tags($item['content'])), 0, 180)); ?>...</p>
-    </div>
-<?php endforeach; ?>
+    </section>
 
-<?php render_foot(); ?>
+    <div class="content-grid">
+        <section id="actualites" class="articles-section" aria-labelledby="articles-title">
+            <h2 id="articles-title">Autres articles</h2>
+
+            <?php if (count($gridArticles) === 0): ?>
+                <p class="empty-state">Aucun autre article disponible pour le moment.</p>
+            <?php else: ?>
+                <div class="cards-grid">
+                    <?php foreach ($gridArticles as $article): ?>
+                        <article class="news-card">
+                            <a class="card-image-link" href="<?php echo h(front_article_url($article)); ?>">
+                                <img
+                                    src="<?php echo h(front_article_thumb_src($article, 860, 520, 'actualite guerre iran')); ?>"
+                                    alt="<?php echo h(front_article_thumb_alt($article, 'actualite guerre iran')); ?>"
+                                    width="860"
+                                    height="520"
+                                    loading="lazy"
+                                    fetchpriority="low"
+                                    decoding="async">
+                            </a>
+                            <div class="card-body">
+                                <h3><a href="<?php echo h(front_article_url($article)); ?>"><?php echo h($article['title']); ?></a></h3>
+                                <p><?php echo h(front_excerpt($article['content'], 140)); ?></p>
+                                <a class="link-read" href="<?php echo h(front_article_url($article)); ?>">Lire plus</a>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </section>
+
+        <aside class="sidebar" aria-labelledby="sidebar-title">
+            <h2 id="sidebar-title">Articles recents</h2>
+            <ul>
+                <?php foreach ($recentArticles as $recent): ?>
+                    <li>
+                        <a class="recent-link" href="<?php echo h(front_article_url($recent)); ?>">
+                            <img
+                                src="<?php echo h(front_article_thumb_src($recent, 240, 140, 'actualite recente guerre iran')); ?>"
+                                alt="<?php echo h(front_article_thumb_alt($recent, 'actualite recente guerre iran')); ?>"
+                                width="240"
+                                height="140"
+                                loading="lazy"
+                                fetchpriority="low"
+                                decoding="async">
+                            <span><?php echo h($recent['title']); ?></span>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </aside>
+    </div>
+</main>
+
+<?php include __DIR__ . '/includes/footer.php'; ?>
