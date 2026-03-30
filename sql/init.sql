@@ -75,15 +75,15 @@ INSERT INTO articles (title, slug, content, is_published) VALUES
  'Le conflit s''étend maintenant au 30e jour, avec des frappes continues sur les infrastructures iraniennes et des réponses iraniennes par missiles. Le Premier ministre israélien Benjamin Netanyahu travaille en coordination avec le président Donald Trump pour maintenir la pression tout en gérant les réactions internationales. Les pourparlers diplomatiques restent tendus avec peu de signes de désescalade.', 1);
 
 INSERT INTO article_images (article_id, image_kind, image_path, image_alt, sort_order) VALUES
-(1, 'main', '/assets/images/article-1.jpg', 'Houthis et missiles vers Israël', 1),
-(1, 'thumb', '/assets/images/article-1-thumb.jpg', 'Houthis et missiles vers Israël', 1),
-(2, 'main', '/assets/images/article-2.jpeg', 'Donald Trump et la stratégie américaine', 1),
-(2, 'thumb', '/assets/images/article-2-thumb.jpeg', 'Donald Trump et la stratégie américaine', 1),
-(3, 'main', '/assets/images/article-3.jpg', 'Bombardements sur les infrastructures iraniennes', 1),
-(3, 'thumb', '/assets/images/article-3-thumb.jpg', 'Bombardements sur les infrastructures iraniennes', 1),
-(4, 'main', '/assets/images/article-4.jpg', 'Riposte iranienne : missiles et drones', 1),
-(4, 'thumb', '/assets/images/article-4-thumb.jpg', 'Riposte iranienne : missiles et drones', 1),
-(5, 'main', '/assets/images/article-5.jpg', 'Conséquences économiques et sociales de la guerre 2026', 1),
-(5, 'thumb', '/assets/images/article-5-thumb.jpg', 'Conséquences économiques et sociales de la guerre 2026', 1),
-(6, 'main', '/assets/images/article-6.jpg', 'Netanyahu, Trump et les derniers développements du conflit', 1),
+(1, 'main', '/assets/images/article-1.webp', 'Houthis et missiles vers Israël', 1),
+(1, 'thumb', '/assets/images/article-1-thumb.webp', 'Houthis et missiles vers Israël', 1),
+(2, 'main', '/assets/images/article-2.webp', 'Donald Trump et la stratégie américaine', 1),
+(2, 'thumb', '/assets/images/article-2-thumb.webp', 'Donald Trump et la stratégie américaine', 1),
+(3, 'main', '/assets/images/article-3.webp', 'Bombardements sur les infrastructures iraniennes', 1),
+(3, 'thumb', '/assets/images/article-3-thumb.webp', 'Bombardements sur les infrastructures iraniennes', 1),
+(4, 'main', '/assets/images/article-4.webp', 'Riposte iranienne : missiles et drones', 1),
+(4, 'thumb', '/assets/images/article-4-thumb.webp', 'Riposte iranienne : missiles et drones', 1),
+(5, 'main', '/assets/images/article-5.webp', 'Conséquences économiques et sociales de la guerre 2026', 1),
+(5, 'thumb', '/assets/images/article-5-thumb.webp', 'Conséquences économiques et sociales de la guerre 2026', 1),
+(6, 'main', '/assets/images/article-6.webp', 'Netanyahu, Trump et les derniers développements du conflit', 1),
 (6, 'thumb', '/assets/images/article-6-thumb.jpg', 'Netanyahu, Trump et les derniers développements du conflit', 1);
