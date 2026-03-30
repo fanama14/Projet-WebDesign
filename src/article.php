@@ -14,7 +14,7 @@ $article = front_find_article(null, $safeId);
 
 if ($article === null) {
     http_response_code(404);
-    $pageTitle = 'Article introuvable | Guerre en Iran';
+    $pageTitle = 'Article introuvable | Orient Vif';
     $pageDescription = 'Cet article n est pas disponible. Consultez les autres actualites sur la guerre en Iran.';
     $canonicalUrl = front_canonical_url('/guerre-iran-actualites.html');
     $activeMenu = 'actualites';
@@ -35,7 +35,7 @@ if ($article === null) {
 }
 
 $articlePath = '/articles/guerre-iran-article-' . (int)$article['id'] . '-' . $safePageNum . '-' . $safeRubrique . '.html';
-$pageTitle = (string)$article['title'] . ' | Guerre en Iran';
+$pageTitle = (string)$article['title'] . ' | Orient Vif';
 $pageDescription = front_excerpt($article['content'], 155);
 $canonicalUrl = front_canonical_url($articlePath);
 $activeMenu = 'actualites';
@@ -49,7 +49,6 @@ include __DIR__ . '/includes/header.php';
 <main class="layout-main article-layout">
     <article class="article-detail" itemscope itemtype="https://schema.org/NewsArticle">
         <header class="article-header">
-            <p class="kicker">Analyse</p>
             <h1 itemprop="headline"><?php echo h($article['title']); ?></h1>
             <p class="article-meta">
                 Date publication:
@@ -75,13 +74,13 @@ include __DIR__ . '/includes/header.php';
         </figure>
 
         <section class="article-content" aria-labelledby="content-title" itemprop="articleBody">
-            <h2 id="content-title">Contenu complet</h2>
+            <h2 id="content-title" class="sr-only">Corps de l'article</h2>
             <p><?php echo nl2br(h($article['content'])); ?></p>
         </section>
     </article>
 
     <aside class="sidebar article-sidebar" aria-labelledby="recent-title">
-        <h2 id="recent-title">Articles recents</h2>
+        <h2 id="recent-title">Autres articles</h2>
         <ul>
             <?php foreach ($recentArticles as $recent): ?>
                 <li><a href="<?php echo h(front_article_url($recent)); ?>"><?php echo h($recent['title']); ?></a></li>
