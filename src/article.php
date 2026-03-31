@@ -14,7 +14,7 @@ $article = front_find_article(null, $safeId);
 
 if ($article === null) {
     http_response_code(404);
-    $pageTitle = 'Article introuvable | Guerre en Iran';
+    $pageTitle = 'Article introuvable | Orient Vif';
     $pageDescription = 'Cet article n est pas disponible. Consultez les autres actualites sur la guerre en Iran.';
     $canonicalUrl = front_canonical_url('/guerre-iran-actualites.html');
     $activeMenu = 'actualites';
@@ -35,13 +35,17 @@ if ($article === null) {
 }
 
 $articlePath = '/articles/guerre-iran-article-' . (int)$article['id'] . '-' . $safePageNum . '-' . $safeRubrique . '.html';
-$pageTitle = (string)$article['title'] . ' | Guerre en Iran';
+$pageTitle = (string)$article['title'] . ' | Orient Vif';
 $pageDescription = front_excerpt($article['content'], 155);
 $canonicalUrl = front_canonical_url($articlePath);
 $activeMenu = 'actualites';
-$recentArticles = front_recent_articles(5, (int)$article['id']);
+$sidebarOtherArticles = front_recent_articles_excluding(5, array((int)$article['id']));
 $detailMainSrc = front_article_image_src($article, 1280, 720, 'actualite guerre iran');
 $detailThumbSrc = front_article_thumb_src($article, 860, 520, 'actualite guerre iran');
+
+$preloadImageHref = $detailMainSrc;
+$preloadImageSrcset = $detailThumbSrc . ' 860w, ' . $detailMainSrc . ' 1280w';
+$preloadImageSizes = '(max-width: 800px) 100vw, (max-width: 1260px) 68vw, 920px';
 
 include __DIR__ . '/includes/header.php';
 ?>
@@ -49,19 +53,19 @@ include __DIR__ . '/includes/header.php';
 <main class="layout-main article-layout">
     <article class="article-detail" itemscope itemtype="https://schema.org/NewsArticle">
         <header class="article-header">
-            <p class="kicker">Analyse</p>
             <h1 itemprop="headline"><?php echo h($article['title']); ?></h1>
             <p class="article-meta">
                 Date publication:
-                <time itemprop="datePublished" datetime="<?php echo h(isset($article['created_at']) ? $article['created_at'] : $article['updated_at']); ?>">
-                    <?php echo h(front_format_date(isset($article['created_at']) ? $article['created_at'] : $article['updated_at'])); ?>
+                <?php $publishedAt = front_article_datetime_value($article); ?>
+                <time itemprop="datePublished" datetime="<?php echo h($publishedAt); ?>">
+                    <?php echo h(front_format_datetime($publishedAt)); ?>
                 </time>
             </p>
         </header>
 
         <figure class="article-figure">
             <picture>
-                <source media="(max-width: 980px)" srcset="<?php echo h($detailThumbSrc); ?>">
+                <source media="(max-width: 800px)" srcset="<?php echo h($detailThumbSrc); ?>">
                 <img
                     src="<?php echo h($detailMainSrc); ?>"
                     alt="<?php echo h(front_article_alt($article, 'actualite guerre iran')); ?>"
@@ -81,10 +85,15 @@ include __DIR__ . '/includes/header.php';
     </article>
 
     <aside class="sidebar article-sidebar" aria-labelledby="recent-title">
-        <h2 id="recent-title">Articles recents</h2>
+        <h2 id="recent-title">Autres articles</h2>
         <ul>
-            <?php foreach ($recentArticles as $recent): ?>
-                <li><a href="<?php echo h(front_article_url($recent)); ?>"><?php echo h($recent['title']); ?></a></li>
+            <?php foreach ($sidebarOtherArticles as $otherArticle): ?>
+                <li>
+                    <a href="<?php echo h(front_article_url($otherArticle)); ?>">
+                        <?php echo h($otherArticle['title']); ?>
+                    </a>
+                    <small class="recent-time"><?php echo h(front_format_datetime(front_article_datetime_value($otherArticle))); ?></small>
+                </li>
             <?php endforeach; ?>
         </ul>
     </aside>
