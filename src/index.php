@@ -40,17 +40,17 @@ if ($featuredArticle === null || count($spotlightArticles) === 0 || count($sideb
 }
 
 $activeMenu = $view === 'accueil' ? 'accueil' : $view;
-$pageTitle = 'Orient Vif - Actualites guerre Iran';
+$pageTitle = 'Iran News - Actualites guerre Iran';
 $pageDescription = 'Suivez les actualites sur la guerre en Iran: analyses, points de situation et suivi geopolitique.';
 $canonicalPath = '/guerre-iran-accueil.html';
 
 if ($view === 'actualites') {
-    $pageTitle = 'Actualites conflit Iran - Orient Vif';
+    $pageTitle = 'Actualites conflit Iran - Iran News';
     $canonicalPath = '/guerre-iran-actualites.html';
 }
 
 if ($view === 'contact') {
-    $pageTitle = 'Contact redaction - Orient Vif';
+    $pageTitle = 'Contact redaction - Iran News';
     $canonicalPath = '/guerre-iran-contact.html';
 }
 
@@ -96,7 +96,7 @@ include __DIR__ . '/includes/header.php';
                 </div>
             <?php else: ?>
                 <div class="hero-content">
-                    <p class="kicker">Orient Vif</p>
+                    <p class="kicker">Iran News</p>
                     <h1 id="hero-title">Actualites sur la guerre en Iran</h1>
                     <p class="hero-summary">Les articles seront affiches ici des qu'un contenu sera publie.</p>
                 </div>

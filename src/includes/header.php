@@ -1,7 +1,7 @@
 <?php
 
 if (!isset($pageTitle) || trim((string)$pageTitle) === '') {
-    $pageTitle = 'Actualites guerre Iran | Orient Vif';
+    $pageTitle = 'Actualites guerre Iran | Iran News';
 }
 
 if (!isset($pageDescription) || trim((string)$pageDescription) === '') {
@@ -70,7 +70,7 @@ $preloadImageSizes = isset($preloadImageSizes) ? trim((string)$preloadImageSizes
                 <a href="/guerre-iran-actualites.html">International</a>
                 <a href="#">Politique</a>
             </nav>
-            <a class="brand" href="/guerre-iran-accueil.html" aria-label="Retour a l'accueil">Orient Vif</a>
+            <a class="brand" href="/guerre-iran-accueil.html" aria-label="Retour a l'accueil">Iran News</a>
             <nav class="main-nav" aria-label="Navigation principale">
                 <a class="<?php echo $activeMenu === 'accueil' ? 'is-active' : ''; ?>" href="/guerre-iran-accueil.html">Accueil</a>
                 <a class="<?php echo $activeMenu === 'actualites' ? 'is-active' : ''; ?>" href="/guerre-iran-actualites.html">Actualites</a>

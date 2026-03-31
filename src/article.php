@@ -14,7 +14,7 @@ $article = front_find_article(null, $safeId);
 
 if ($article === null) {
     http_response_code(404);
-    $pageTitle = 'Article introuvable | Orient Vif';
+    $pageTitle = 'Article introuvable | Iran News';
     $pageDescription = 'Cet article n est pas disponible. Consultez les autres actualites sur la guerre en Iran.';
     $canonicalUrl = front_canonical_url('/guerre-iran-actualites.html');
     $activeMenu = 'actualites';
@@ -35,7 +35,7 @@ if ($article === null) {
 }
 
 $articlePath = '/articles/guerre-iran-article-' . (int)$article['id'] . '-' . $safePageNum . '-' . $safeRubrique . '.html';
-$pageTitle = (string)$article['title'] . ' | Orient Vif';
+$pageTitle = (string)$article['title'] . ' | Iran News';
 $pageDescription = front_excerpt($article['content'], 155);
 $canonicalUrl = front_canonical_url($articlePath);
 $activeMenu = 'actualites';

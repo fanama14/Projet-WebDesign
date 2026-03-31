@@ -2,7 +2,7 @@
         <div class="footer-inner">
             <div class="footer-grid">
                 <div class="footer-col footer-col--brand">
-                    <p class="footer-brand">Orient Vif</p>
+                    <p class="footer-brand">Iran News</p>
                     <p class="footer-tagline">Journalisme de terrain &mdash; Proche-Orient</p>
                     <p>Suivi editorial independant du conflit en Iran et des crises geopolitiques au Proche-Orient. Analyses, chronologies et reportages.</p>
                 </div>
@@ -37,7 +37,7 @@
                 </div>
             </div>
         </div>
-        <p class="footer-copy">&copy; <?php echo date('Y'); ?> Orient Vif &mdash; Edition numerique independante.</p>
+        <p class="footer-copy">&copy; <?php echo date('Y'); ?> Iran News &mdash; Edition numerique independante.</p>
     </footer>
 </body>
 
