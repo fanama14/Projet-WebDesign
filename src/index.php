@@ -158,6 +158,80 @@ include __DIR__ . '/includes/header.php';
             </div>
         <?php endif; ?>
     </section>
+
+    <section class="key-figures" aria-labelledby="figures-title">
+        <h2 id="figures-title" class="section-kicker">Le conflit en chiffres</h2>
+        <div class="figures-grid">
+            <div class="figure-item">
+                <span class="figure-number">31</span>
+                <span class="figure-label">Jours de conflit</span>
+            </div>
+            <div class="figure-item">
+                <span class="figure-number">12</span>
+                <span class="figure-label">Pays impliqués</span>
+            </div>
+            <div class="figure-item">
+                <span class="figure-number">4 800+</span>
+                <span class="figure-label">Victimes civiles recensées</span>
+            </div>
+            <div class="figure-item">
+                <span class="figure-number">3</span>
+                <span class="figure-label">Résolutions ONU adoptées</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="conflict-timeline" aria-labelledby="timeline-title">
+        <h2 id="timeline-title" class="section-kicker">Chronologie du conflit</h2>
+        <div class="timeline">
+    
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-date">28 Fév. 2026</div>
+                <div class="timeline-content">
+                    <strong>Début du conflit</strong>
+                    <p>Les États-Unis et Israël lancent les premières frappes aériennes ciblées sur des installations nucléaires et militaires en Iran.</p>
+                </div>
+            </div>
+    
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-date">5 Mars 2026</div>
+                <div class="timeline-content">
+                    <strong>Première riposte iranienne</strong>
+                    <p>L'Iran riposte avec des salves de missiles balistiques visant des bases américaines au Moyen-Orient et des villes israéliennes.</p>
+                </div>
+            </div>
+    
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-date">12 Mars 2026</div>
+                <div class="timeline-content">
+                    <strong>Résolution ONU bloquée</strong>
+                    <p>Le Conseil de sécurité tente un cessez-le-feu. La résolution est bloquée par le veto américain et russe.</p>
+                </div>
+            </div>
+    
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-date">20 Mars 2026</div>
+                <div class="timeline-content">
+                    <strong>Entrée en guerre des Houthis</strong>
+                    <p>Les rebelles Houthis du Yémen annoncent des tirs de missiles vers Israël en soutien à l'Iran, élargissant le conflit.</p>
+                </div>
+            </div>
+    
+            <div class="timeline-item timeline-item--active">
+                <div class="timeline-dot"></div>
+                <div class="timeline-date">31 Mars 2026</div>
+                <div class="timeline-content">
+                    <strong>Situation actuelle</strong>
+                    <p>Les combats se poursuivent. Des négociations diplomatiques sont en cours à Genève sous l'égide des Nations Unies.</p>
+                </div>
+            </div>
+    
+        </div>
+    </section>
 </main>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>
