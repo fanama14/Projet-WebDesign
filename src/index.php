@@ -79,7 +79,7 @@ include __DIR__ . '/includes/header.php';
                     <h1 id="hero-title"><?php echo h($featuredArticle['title']); ?></h1>
                     <p class="article-time"><?php echo h(front_format_datetime(front_article_datetime_value($featuredArticle))); ?></p>
                     <p class="hero-summary"><?php echo h(front_excerpt($featuredArticle['content'], 230)); ?></p>
-                    <a class="link-read" href="<?php echo h(front_article_url($featuredArticle)); ?>">Lire l'article principal</a>
+                    <a class="link-read" href="<?php echo h(front_article_url($featuredArticle)); ?>">Lire l'article</a>
                 </div>
                 <div class="hero-image-wrap">
                     <picture>

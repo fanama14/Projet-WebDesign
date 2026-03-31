@@ -75,7 +75,7 @@ INSERT INTO articles (title, slug, content, is_published) VALUES
  'Le conflit s''étend maintenant au 30e jour, avec des frappes continues sur les infrastructures iraniennes et des réponses iraniennes par missiles. Le Premier ministre israélien Benjamin Netanyahu travaille en coordination avec le président Donald Trump pour maintenir la pression tout en gérant les réactions internationales. Les pourparlers diplomatiques restent tendus avec peu de signes de désescalade.', 1);
 
 UPDATE articles
-SET created_at = '2026-03-24 08:10:00', updated_at = '2026-03-24 09:25:00'
+SET created_at = '2026-03-24 08:10:00', updated_at = '2026-03-31 09:25:00'
 WHERE id = 1;
 
 UPDATE articles
