@@ -33,7 +33,6 @@
                         <li><a href="#">Contact redaction</a></li>
                         <li><a href="#">Mentions legales</a></li>
                         <li><a href="#">Charte editoriale</a></li>
-                        <li><a href="/login">BackOffice</a></li>
                     </ul>
                 </div>
             </div>

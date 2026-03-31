@@ -79,7 +79,7 @@ include __DIR__ . '/includes/header.php';
         </figure>
 
         <section class="article-content" aria-labelledby="content-title" itemprop="articleBody">
-            <h2 id="content-title">Contenu complet</h2>
+            <h2 id="content-title" class="sr-only">Corps de l'article</h2>
             <?php echo front_render_article_html($article['content']); ?>
         </section>
     </article>
