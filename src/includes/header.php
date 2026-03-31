@@ -16,7 +16,7 @@ if (!isset($activeMenu)) {
     $activeMenu = 'accueil';
 }
 
-$fontStylesheet = 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=DM+Sans:wght@300;400;500;600&display=swap';
+$fontStylesheet = 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;600&display=swap';
 $cssFilePath = __DIR__ . '/assets/css/style.min.css';
 $cssVersion = is_file($cssFilePath) ? (string)filemtime($cssFilePath) : '1';
 
@@ -74,6 +74,7 @@ $preloadImageSizes = isset($preloadImageSizes) ? trim((string)$preloadImageSizes
             <nav class="main-nav" aria-label="Navigation principale">
                 <a class="<?php echo $activeMenu === 'accueil' ? 'is-active' : ''; ?>" href="/guerre-iran-accueil.html">Accueil</a>
                 <a class="<?php echo $activeMenu === 'actualites' ? 'is-active' : ''; ?>" href="/guerre-iran-actualites.html">Actualites</a>
+                <a href="/admin/">Backoffice</a>
             </nav>
         </div>
         <nav class="subnav" aria-label="Sous-rubriques">
